@@ -8,7 +8,6 @@ bc_printA (char *str)
   if (str == NULL)
     return -1;
 
-  /* Enter alternate charset mode */
   if (write (STDOUT_FILENO, "\033(0", 3) == -1)
     return -1;
 
@@ -22,7 +21,6 @@ bc_printA (char *str)
       str++;
     }
 
-  /* Exit alternate charset mode */
   if (write (STDOUT_FILENO, "\033(B", 3) == -1)
     return -1;
 

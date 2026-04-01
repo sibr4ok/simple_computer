@@ -3,28 +3,13 @@
 #include <stdio.h>
 #include <unistd.h>
 
-/*
- * Кодировочная таблица:
- *  0  -> '0'     6  -> '6'    12 -> 'C'
- *  1  -> '1'     7  -> '7'    13 -> 'D'
- *  2  -> '2'     8  -> '8'    14 -> 'E'
- *  3  -> '3'     9  -> '9'    15 -> 'F'
- *  4  -> '4'    10  -> 'A'    16 -> '+'
- *  5  -> '5'    11  -> 'B'    17 -> '-'
- *
- * Each symbol is int[2].
- * Rows 0-3 encoded in big[0], rows 4-7 in big[1].
- * Row N (within a half): bits [N*8 .. N*8+7],
- *   bit 0 = leftmost column, bit 7 = rightmost.
- */
-
 #define FONT_SIZE 18
 
 static int font[FONT_SIZE][2] = {
     /* 0: '0' */
     {0x66667E3C, 0x3C7E6666},
     /* 1: '1' */
-    {0x18181C18, 0x7E7E1818},
+    {0x18183818, 0x7E7E1818},
     /* 2: '2' */
     {0x06067E3C, 0x7E7E6030},
     /* 3: '3' */

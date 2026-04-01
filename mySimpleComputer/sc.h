@@ -26,4 +26,4 @@ sc_to_signed (int raw)
     return -(((~raw) + 1) & 0x7FFF);
 }
 
-#endif /* SC_INTERNAL_H */
+#endif 

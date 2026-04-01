@@ -13,7 +13,6 @@ bc_box (int x1, int y1, int x2, int y2, enum colors box_fg,
   mt_setfgcolor (box_fg);
   mt_setbgcolor (box_bg);
 
-  /* Top line */
   mt_gotoXY (x1, y1);
   write (STDOUT_FILENO, "\033(0", 3);
   write (STDOUT_FILENO, "l", 1);
@@ -22,7 +21,6 @@ bc_box (int x1, int y1, int x2, int y2, enum colors box_fg,
   write (STDOUT_FILENO, "k", 1);
   write (STDOUT_FILENO, "\033(B", 3);
 
-  /* Side lines */
   for (int r = 1; r < x2 - 1; r++)
     {
       mt_gotoXY (x1 + r, y1);
@@ -38,7 +36,6 @@ bc_box (int x1, int y1, int x2, int y2, enum colors box_fg,
       write (STDOUT_FILENO, "\033(B", 3);
     }
 
-  /* Bottom line */
   mt_gotoXY (x1 + x2 - 1, y1);
   write (STDOUT_FILENO, "\033(0", 3);
   write (STDOUT_FILENO, "m", 1);
@@ -47,7 +44,6 @@ bc_box (int x1, int y1, int x2, int y2, enum colors box_fg,
   write (STDOUT_FILENO, "j", 1);
   write (STDOUT_FILENO, "\033(B", 3);
 
-  /* Header */
   if (header != NULL)
     {
       int hlen = bc_strlen (header);

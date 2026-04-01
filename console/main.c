@@ -15,7 +15,7 @@
 #define TEST_FL_IGNORE 1
 #define TEST_FL_INVCMD 1
 
-#define TEST_EDIT_CELL 0
+#define TEST_EDIT_CELL 126
 
 #define MEM_BOX_ROW 1
 #define MEM_BOX_COL 1
@@ -93,43 +93,33 @@ load_font (const char *filename)
 static void
 draw_boxes (void)
 {
-  /* Оперативная память */
   bc_box (MEM_BOX_ROW, MEM_BOX_COL, MEM_BOX_H, MEM_BOX_W, WHITE, BLACK,
           "Оперативная память", RED, BLACK);
 
-  /* Аккумулятор */
   bc_box (ACC_BOX_ROW, ACC_BOX_COL, ACC_BOX_H, ACC_BOX_W, WHITE, BLACK,
           "Аккумулятор", RED, BLACK);
 
-  /* Регистр флагов */
   bc_box (FLAGS_BOX_ROW, FLAGS_BOX_COL, FLAGS_BOX_H, FLAGS_BOX_W, WHITE,
           BLACK, "Регистр флагов", RED, BLACK);
 
-  /* Счетчик команд */
   bc_box (IC_BOX_ROW, IC_BOX_COL, IC_BOX_H, IC_BOX_W, WHITE, BLACK,
           "Счетчик команд", RED, BLACK);
 
-  /* Команда */
   bc_box (CMD_BOX_ROW, CMD_BOX_COL, CMD_BOX_H, CMD_BOX_W, WHITE, BLACK,
           "Команда", RED, BLACK);
 
-  /* Редактируемая ячейка (увеличено) */
   bc_box (BIGCELL_BOX_ROW, BIGCELL_BOX_COL, BIGCELL_BOX_H, BIGCELL_BOX_W,
           WHITE, BLACK, "Редактируемая ячейка (увеличено)", RED, WHITE);
 
-  /* Редактируемая ячейка (формат) */
   bc_box (DECODE_BOX_ROW, DECODE_BOX_COL, DECODE_BOX_H, DECODE_BOX_W, WHITE,
           BLACK, "Редактируемая ячейка (формат)", RED, WHITE);
 
-  /* Кеш процессора */
   bc_box (CACHE_BOX_ROW, CACHE_BOX_COL, CACHE_BOX_H, CACHE_BOX_W, WHITE,
           BLACK, "Кеш процессора", GREEN, WHITE);
 
-  /* IN--OUT */
   bc_box (INOUT_BOX_ROW, INOUT_BOX_COL, INOUT_BOX_H, INOUT_BOX_W, WHITE,
           BLACK, "IN--OUT", GREEN, WHITE);
 
-  /* Клавиши */
   bc_box (KEYS_BOX_ROW, KEYS_BOX_COL, KEYS_BOX_H, KEYS_BOX_W, WHITE, BLACK,
           "Клавиши", GREEN, WHITE);
 }
@@ -172,8 +162,7 @@ printBigCell (void)
   int high7 = (raw >> 7) & 0x7F;
   int low7 = raw & 0x7F;
 
-  /* 5 big chars: sign, h1, h0, l1, l0 */
-  int sign_idx = sign ? 17 : 16; /* '-' or '+' */
+  int sign_idx = sign ? 17 : 16;
   int h1 = hex_to_fontidx ((high7 >> 4) & 0x0F);
   int h0 = hex_to_fontidx (high7 & 0x0F);
   int l1 = hex_to_fontidx ((low7 >> 4) & 0x0F);
@@ -187,7 +176,6 @@ printBigCell (void)
                        BIGCELL_CHAR_COL + i * 7, WHITE, BLACK);
     }
 
-  /* Номер редактируемой ячейки */
   mt_gotoXY (BIGCELL_CHAR_ROW + 8, BIGCELL_BOX_COL + 2);
   mt_setfgcolor (BLUE);
   mt_setbgcolor (BLACK);
@@ -273,10 +261,8 @@ main (int argc, char *argv[])
   mt_setcursorvisible (0);
   setbuf (stdout, NULL);
 
-  /* Draw all pseudo-graphic boxes */
   draw_boxes ();
 
-  /* Print memory cells */
   for (int i = 0; i < SC_MEMORY_SIZE; i++)
     {
       if (i == TEST_EDIT_CELL)
@@ -302,10 +288,8 @@ main (int argc, char *argv[])
   sc_memoryGet (TEST_EDIT_CELL, &raw);
   printDecodedCommand (raw);
 
-  /* Print big cell */
   printBigCell ();
 
-  /* Print keys help */
   print_keys ();
 
   mt_gotoXY (MIN_ROWS, 1);

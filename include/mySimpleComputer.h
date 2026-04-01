@@ -60,14 +60,14 @@
 #define SC_IC(low) ((low)&0x7F)
 
 #define MEMORY_ROW 2
-#define MEMORY_COL 2          // было 1 (чтобы ячейки были внутри рамки)
+#define MEMORY_COL 2
 #define MEMORY_COLS_NUM 10
 
 #define ACC_ROW 2
-#define ACC_COL 64            // внутри рамки (63 + 1)
+#define ACC_COL 64
 
 #define FLAGS_ROW 2
-#define FLAGS_COL 90          // внутри рамки (83 + 1)
+#define FLAGS_COL 90
 
 #define IC_ROW 5
 #define IC_COL 65
@@ -75,8 +75,8 @@
 #define CMD_ROW 5
 #define CMD_COL 90
 
-#define INOUT_ROW 20          // без изменений (19 + 1)
-#define INOUT_COL 64          // без изменений (63 + 1)
+#define INOUT_ROW 20
+#define INOUT_COL 64
 #define INOUT_LINES 5
 
 #define DECODE_ROW 17

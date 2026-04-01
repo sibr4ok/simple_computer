@@ -13,7 +13,7 @@ printTerm (int address, int input)
   if (input)
     {
       snprintf (line, sizeof (line), "%02X> ",
-                address); // HEX ад���ес, 2 символа
+                address); 
     }
   else
     {
@@ -23,7 +23,7 @@ printTerm (int address, int input)
       int high7 = (raw >> 7) & 0x7F;
       int low7 = raw & 0x7F;
       snprintf (line, sizeof (line), "%02X> %c%02X%02X", address,
-                sign ? '-' : '+', high7, low7); // HEX адрес
+                sign ? '-' : '+', high7, low7); 
     }
 
   if (inout_count < INOUT_LINES)

@@ -15,11 +15,11 @@ bc_printbigchar (int big[2], int x, int y, enum colors fg, enum colors bg)
     {
       mt_gotoXY (x + row, y);
 
-      int idx = row / 4;       /* big[0] for rows 0-3, big[1] for rows 4-7 */
+      int idx = row / 4;      
       int bit_row = row % 4;
       int byte_val = (big[idx] >> (bit_row * 8)) & 0xFF;
 
-      for (int col = 7; col >= 0; col--)   /* MSB = leftmost column */
+      for (int col = 7; col >= 0; col--)  
         {
           int bit = (byte_val >> col) & 1;
           if (bit)
