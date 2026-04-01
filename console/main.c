@@ -15,62 +15,60 @@
 #define TEST_FL_IGNORE 1
 #define TEST_FL_INVCMD 1
 
-#define TEST_EDIT_CELL 126
+#define TEST_EDIT_CELL 0
 
-/* Layout positions for boxes */
 #define MEM_BOX_ROW 1
 #define MEM_BOX_COL 1
 #define MEM_BOX_H 15
-#define MEM_BOX_W 62          // было 61
+#define MEM_BOX_W 62
 
 #define ACC_BOX_ROW 1
-#define ACC_BOX_COL 63        // было 62
-#define ACC_BOX_H 2
-#define ACC_BOX_W 19          // было 21
+#define ACC_BOX_COL 63
+#define ACC_BOX_H 3
+#define ACC_BOX_W 23          
 
 #define FLAGS_BOX_ROW 1
-#define FLAGS_BOX_COL 82      // было 83
-#define FLAGS_BOX_H 2
-#define FLAGS_BOX_W 19        // было 18
+#define FLAGS_BOX_COL 86      
+#define FLAGS_BOX_H 3
+#define FLAGS_BOX_W 18        
 
-#define IC_BOX_ROW 3
-#define IC_BOX_COL 63         // было 62
-#define IC_BOX_H 2
-#define IC_BOX_W 19           // было 21
+#define IC_BOX_ROW 4
+#define IC_BOX_COL 63
+#define IC_BOX_H 3
+#define IC_BOX_W 23
 
-#define CMD_BOX_ROW 3
-#define CMD_BOX_COL 82        // было 83
-#define CMD_BOX_H 2
-#define CMD_BOX_W 19          // было 18
+#define CMD_BOX_ROW 4
+#define CMD_BOX_COL 86
+#define CMD_BOX_H 3
+#define CMD_BOX_W 18
 
-#define BIGCELL_BOX_ROW 5
-#define BIGCELL_BOX_COL 63    // было 62
-#define BIGCELL_BOX_H 11
-#define BIGCELL_BOX_W 38      // было 39
+#define BIGCELL_BOX_ROW 7
+#define BIGCELL_BOX_COL 63
+#define BIGCELL_BOX_H 12
+#define BIGCELL_BOX_W 41      
 
-#define DECODE_BOX_ROW 16     // было 15
+#define DECODE_BOX_ROW 16
 #define DECODE_BOX_COL 1
 #define DECODE_BOX_H 3
-#define DECODE_BOX_W 62       // было 61
+#define DECODE_BOX_W 62
 
-#define CACHE_BOX_ROW 19      // было 18
+#define CACHE_BOX_ROW 19
 #define CACHE_BOX_COL 1
 #define CACHE_BOX_H 7
-#define CACHE_BOX_W 62        // было 61
+#define CACHE_BOX_W 62
 
-#define INOUT_BOX_ROW 17
-#define INOUT_BOX_COL 63      // было 62
-#define INOUT_BOX_H 8
-#define INOUT_BOX_W 19        // было 18
+#define INOUT_BOX_ROW 19
+#define INOUT_BOX_COL 63
+#define INOUT_BOX_H 7
+#define INOUT_BOX_W 11        
 
-#define KEYS_BOX_ROW 17
-#define KEYS_BOX_COL 82       // было 80
-#define KEYS_BOX_H 8
-#define KEYS_BOX_W 19         // было 21
+#define KEYS_BOX_ROW 19
+#define KEYS_BOX_COL 74       
+#define KEYS_BOX_H 7
+#define KEYS_BOX_W 30         
 
-/* Big cell area */
-#define BIGCELL_CHAR_ROW 6
-#define BIGCELL_CHAR_COL 66   // было 65
+#define BIGCELL_CHAR_ROW 8
+#define BIGCELL_CHAR_COL 66
 
 static int bigfont[FONT_SIZE][2];
 
@@ -140,21 +138,20 @@ static void
 print_keys (void)
 {
   mt_setfgcolor (WHITE);
-  mt_gotoXY (KEYS_BOX_ROW + 1, KEYS_BOX_COL + 1);
-  printf ("l - load  s - save");
+  mt_gotoXY (KEYS_BOX_ROW + 1, KEYS_BOX_COL + 1); 
+  printf ("l - load  s - save i - reset");
   mt_gotoXY (KEYS_BOX_ROW + 2, KEYS_BOX_COL + 1);
-  printf ("i - reset");
-  mt_gotoXY (KEYS_BOX_ROW + 3, KEYS_BOX_COL + 1);
   printf ("r - run   t - step");
-  mt_gotoXY (KEYS_BOX_ROW + 4, KEYS_BOX_COL + 1);
+  mt_gotoXY (KEYS_BOX_ROW + 3, KEYS_BOX_COL + 1);
   printf ("ESC - выход");
-  mt_gotoXY (KEYS_BOX_ROW + 5, KEYS_BOX_COL + 1);
+  mt_gotoXY (KEYS_BOX_ROW + 4, KEYS_BOX_COL + 1);
   printf ("F5  - accumulator");
-  mt_gotoXY (KEYS_BOX_ROW + 6, KEYS_BOX_COL + 1);
+  mt_gotoXY (KEYS_BOX_ROW + 5, KEYS_BOX_COL + 1);
   printf ("F6  - instr cntr");
   fflush (stdout);
   mt_setdefaultcolor ();
 }
+
 
 static int
 hex_to_fontidx (int hex_digit)

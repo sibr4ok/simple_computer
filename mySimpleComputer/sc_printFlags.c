@@ -6,8 +6,11 @@ printFlags (void)
 {
   int v;
 
+  mt_gotoXY (FLAGS_ROW, FLAGS_COL);   // ← ДОБАВИТЬ: явное позиционирование
+  mt_setfgcolor (WHITE);              // ← ДОБАВИТЬ: цвет
+
   sc_regGet (SC_FLAG_OVERFLOW, &v);
-  printf ("   %c ", v ? 'P' : '_');
+  printf ("%c ", v ? 'P' : '_');
 
   sc_regGet (SC_FLAG_DIVISION_ZERO, &v);
   printf ("%c ", v ? '0' : '_');
@@ -21,5 +24,6 @@ printFlags (void)
   sc_regGet (SC_FLAG_INVALID_CMD, &v);
   printf ("%c", v ? 'E' : '_');
 
-  printf ("\n");
+  fflush (stdout);                    // ← ДОБАВИТЬ
+  mt_setdefaultcolor ();              // ← ДОБАВИТЬ
 }

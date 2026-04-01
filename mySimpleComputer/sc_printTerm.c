@@ -42,7 +42,7 @@ printTerm (int address, int input)
   for (int i = 0; i < inout_count; i++)
     {
       mt_gotoXY (INOUT_ROW + i, INOUT_COL);
-      printf ("%-14s", inout_buf[i]);
+      printf ("%-9s", inout_buf[i]);
     }
   fflush (stdout);
   mt_setdefaultcolor ();

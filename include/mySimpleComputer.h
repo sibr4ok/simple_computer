@@ -64,23 +64,23 @@
 #define MEMORY_COLS_NUM 10
 
 #define ACC_ROW 2
-#define ACC_COL 64            // было 62
+#define ACC_COL 64            // внутри рамки (63 + 1)
 
 #define FLAGS_ROW 2
-#define FLAGS_COL 83          // было 84
+#define FLAGS_COL 90          // внутри рамки (83 + 1)
 
-#define IC_ROW 4
-#define IC_COL 64             // было 62
+#define IC_ROW 5
+#define IC_COL 65
 
-#define CMD_ROW 4
-#define CMD_COL 83            // было 84
+#define CMD_ROW 5
+#define CMD_COL 90
 
-#define INOUT_ROW 18
-#define INOUT_COL 64          // было 64 (оставить)
+#define INOUT_ROW 20          // без изменений (19 + 1)
+#define INOUT_COL 64          // без изменений (63 + 1)
 #define INOUT_LINES 5
 
-#define DECODE_ROW 17         // было 16
-#define DECODE_COL 2          // было 1
+#define DECODE_ROW 17
+#define DECODE_COL 2
 
 #define EDITCELL_ROW 16
 #define EDITCELL_COL 55
