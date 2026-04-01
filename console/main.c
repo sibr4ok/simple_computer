@@ -67,7 +67,7 @@
 #define KEYS_BOX_H 7
 #define KEYS_BOX_W 30         
 
-#define BIGCELL_CHAR_ROW 8
+#define BIGCELL_CHAR_ROW 9
 #define BIGCELL_CHAR_COL 66
 
 static int bigfont[FONT_SIZE][2];
@@ -98,40 +98,40 @@ draw_boxes (void)
           "Оперативная память", RED, BLACK);
 
   /* Аккумулятор */
-  bc_box (ACC_BOX_ROW, ACC_BOX_COL, ACC_BOX_H, ACC_BOX_W, GREEN, BLACK,
-          "Аккумулятор", RED, GREEN);
+  bc_box (ACC_BOX_ROW, ACC_BOX_COL, ACC_BOX_H, ACC_BOX_W, WHITE, BLACK,
+          "Аккумулятор", RED, BLACK);
 
   /* Регистр флагов */
-  bc_box (FLAGS_BOX_ROW, FLAGS_BOX_COL, FLAGS_BOX_H, FLAGS_BOX_W, GREEN,
-          BLACK, "Регистр флагов", RED, GREEN);
+  bc_box (FLAGS_BOX_ROW, FLAGS_BOX_COL, FLAGS_BOX_H, FLAGS_BOX_W, WHITE,
+          BLACK, "Регистр флагов", RED, BLACK);
 
   /* Счетчик команд */
-  bc_box (IC_BOX_ROW, IC_BOX_COL, IC_BOX_H, IC_BOX_W, GREEN, BLACK,
-          "Счетчик команд", RED, GREEN);
+  bc_box (IC_BOX_ROW, IC_BOX_COL, IC_BOX_H, IC_BOX_W, WHITE, BLACK,
+          "Счетчик команд", RED, BLACK);
 
   /* Команда */
-  bc_box (CMD_BOX_ROW, CMD_BOX_COL, CMD_BOX_H, CMD_BOX_W, GREEN, BLACK,
-          "Команда", RED, GREEN);
+  bc_box (CMD_BOX_ROW, CMD_BOX_COL, CMD_BOX_H, CMD_BOX_W, WHITE, BLACK,
+          "Команда", RED, BLACK);
 
   /* Редактируемая ячейка (увеличено) */
   bc_box (BIGCELL_BOX_ROW, BIGCELL_BOX_COL, BIGCELL_BOX_H, BIGCELL_BOX_W,
-          GREEN, BLACK, "Редактируемая ячейка (увеличено)", RED, GREEN);
+          WHITE, BLACK, "Редактируемая ячейка (увеличено)", RED, WHITE);
 
   /* Редактируемая ячейка (формат) */
-  bc_box (DECODE_BOX_ROW, DECODE_BOX_COL, DECODE_BOX_H, DECODE_BOX_W, GREEN,
-          BLACK, "Редактируемая ячейка (формат)", RED, GREEN);
+  bc_box (DECODE_BOX_ROW, DECODE_BOX_COL, DECODE_BOX_H, DECODE_BOX_W, WHITE,
+          BLACK, "Редактируемая ячейка (формат)", RED, WHITE);
 
   /* Кеш процессора */
-  bc_box (CACHE_BOX_ROW, CACHE_BOX_COL, CACHE_BOX_H, CACHE_BOX_W, GREEN,
-          BLACK, "Кеш процессора", RED, GREEN);
+  bc_box (CACHE_BOX_ROW, CACHE_BOX_COL, CACHE_BOX_H, CACHE_BOX_W, WHITE,
+          BLACK, "Кеш процессора", GREEN, WHITE);
 
   /* IN--OUT */
-  bc_box (INOUT_BOX_ROW, INOUT_BOX_COL, INOUT_BOX_H, INOUT_BOX_W, GREEN,
-          BLACK, "IN--OUT", RED, GREEN);
+  bc_box (INOUT_BOX_ROW, INOUT_BOX_COL, INOUT_BOX_H, INOUT_BOX_W, WHITE,
+          BLACK, "IN--OUT", GREEN, WHITE);
 
   /* Клавиши */
-  bc_box (KEYS_BOX_ROW, KEYS_BOX_COL, KEYS_BOX_H, KEYS_BOX_W, GREEN, BLACK,
-          "Клавиши", RED, GREEN);
+  bc_box (KEYS_BOX_ROW, KEYS_BOX_COL, KEYS_BOX_H, KEYS_BOX_W, WHITE, BLACK,
+          "Клавиши", GREEN, WHITE);
 }
 
 static void
@@ -187,8 +187,8 @@ printBigCell (void)
     }
 
   /* Номер редактируемой ячейки */
-  mt_gotoXY (BIGCELL_CHAR_ROW + 9, BIGCELL_BOX_COL + 2);
-  mt_setfgcolor (GREEN);
+  mt_gotoXY (BIGCELL_CHAR_ROW + 8, BIGCELL_BOX_COL + 2);
+  mt_setfgcolor (BLUE);
   printf ("Номер редактируемой ячейки: %03d", TEST_EDIT_CELL);
   fflush (stdout);
   mt_setdefaultcolor ();
@@ -278,9 +278,9 @@ main (int argc, char *argv[])
   for (int i = 0; i < SC_MEMORY_SIZE; i++)
     {
       if (i == TEST_EDIT_CELL)
-        printCell (i, BLACK, GREEN);
+        printCell (i, BLACK, WHITE);
       else
-        printCell (i, GREEN, BLACK);
+        printCell (i, WHITE, BLACK);
     }
 
   printAccumulator ();
