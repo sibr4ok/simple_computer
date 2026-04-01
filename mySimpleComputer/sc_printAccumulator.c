@@ -11,6 +11,7 @@ printAccumulator (void)
 
   mt_gotoXY (ACC_ROW, ACC_COL);
   mt_setfgcolor (WHITE);
+  mt_setbgcolor (BLACK);            // ← ДОБАВИТЬ
   printf ("sc: %c%02X%02X hex: %04X", sign ? '-' : '+', high7, low7, raw);
   fflush (stdout);
   mt_setdefaultcolor ();

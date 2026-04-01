@@ -9,6 +9,7 @@ printCommand (void)
 
   mt_gotoXY (CMD_ROW, CMD_COL);
   mt_setfgcolor (WHITE);
+  mt_setbgcolor (BLACK);
 
   if (ic_val < 0 || ic_val >= SC_MEMORY_SIZE)
     {

@@ -11,6 +11,7 @@ printDecodedCommand (int raw)
 
   mt_gotoXY (DECODE_ROW, DECODE_COL);
   mt_setfgcolor (WHITE);
+  mt_setbgcolor (BLACK);
 
   if (signed_val < 0)
     printf ("dec: -%05d", -signed_val);

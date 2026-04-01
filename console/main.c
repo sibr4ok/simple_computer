@@ -138,6 +138,7 @@ static void
 print_keys (void)
 {
   mt_setfgcolor (WHITE);
+  mt_setbgcolor (BLACK);
   mt_gotoXY (KEYS_BOX_ROW + 1, KEYS_BOX_COL + 1); 
   printf ("l - load  s - save i - reset");
   mt_gotoXY (KEYS_BOX_ROW + 2, KEYS_BOX_COL + 1);
@@ -189,6 +190,7 @@ printBigCell (void)
   /* Номер редактируемой ячейки */
   mt_gotoXY (BIGCELL_CHAR_ROW + 8, BIGCELL_BOX_COL + 2);
   mt_setfgcolor (BLUE);
+  mt_setbgcolor (BLACK);
   printf ("Номер редактируемой ячейки: %03d", TEST_EDIT_CELL);
   fflush (stdout);
   mt_setdefaultcolor ();

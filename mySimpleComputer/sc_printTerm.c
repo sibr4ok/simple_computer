@@ -39,6 +39,7 @@ printTerm (int address, int input)
     }
 
   mt_setfgcolor (WHITE);
+  mt_setbgcolor (BLACK);
   for (int i = 0; i < inout_count; i++)
     {
       mt_gotoXY (INOUT_ROW + i, INOUT_COL);

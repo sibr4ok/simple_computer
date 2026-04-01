@@ -11,6 +11,7 @@ printCounters (void)
 
   mt_gotoXY (IC_ROW, IC_COL);
   mt_setfgcolor (WHITE);
+  mt_setbgcolor (BLACK);            // ← ДОБАВИТЬ
   printf ("T: %02d     IC: %c%02X%02X", 0, sign ? '-' : '+', high7, low7);
   fflush (stdout);
   mt_setdefaultcolor ();
