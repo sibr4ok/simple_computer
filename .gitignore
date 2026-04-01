@@ -1,0 +1,7 @@
+*.o
+*.obj
+*.out
+*.a
+*.exe
+*.bin 
+test
