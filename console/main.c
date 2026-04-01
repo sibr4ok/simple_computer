@@ -25,12 +25,12 @@
 #define ACC_BOX_ROW 1
 #define ACC_BOX_COL 63
 #define ACC_BOX_H 3
-#define ACC_BOX_W 23          
+#define ACC_BOX_W 23
 
 #define FLAGS_BOX_ROW 1
-#define FLAGS_BOX_COL 86      
+#define FLAGS_BOX_COL 86
 #define FLAGS_BOX_H 3
-#define FLAGS_BOX_W 18        
+#define FLAGS_BOX_W 18
 
 #define IC_BOX_ROW 4
 #define IC_BOX_COL 63
@@ -45,7 +45,7 @@
 #define BIGCELL_BOX_ROW 7
 #define BIGCELL_BOX_COL 63
 #define BIGCELL_BOX_H 12
-#define BIGCELL_BOX_W 41      
+#define BIGCELL_BOX_W 41
 
 #define DECODE_BOX_ROW 16
 #define DECODE_BOX_COL 1
@@ -60,12 +60,12 @@
 #define INOUT_BOX_ROW 19
 #define INOUT_BOX_COL 63
 #define INOUT_BOX_H 7
-#define INOUT_BOX_W 11        
+#define INOUT_BOX_W 11
 
 #define KEYS_BOX_ROW 19
-#define KEYS_BOX_COL 74       
+#define KEYS_BOX_COL 74
 #define KEYS_BOX_H 7
-#define KEYS_BOX_W 30         
+#define KEYS_BOX_W 30
 
 #define BIGCELL_CHAR_ROW 9
 #define BIGCELL_CHAR_COL 66
@@ -99,8 +99,8 @@ draw_boxes (void)
   bc_box (ACC_BOX_ROW, ACC_BOX_COL, ACC_BOX_H, ACC_BOX_W, WHITE, BLACK,
           "Аккумулятор", RED, BLACK);
 
-  bc_box (FLAGS_BOX_ROW, FLAGS_BOX_COL, FLAGS_BOX_H, FLAGS_BOX_W, WHITE,
-          BLACK, "Регистр флагов", RED, BLACK);
+  bc_box (FLAGS_BOX_ROW, FLAGS_BOX_COL, FLAGS_BOX_H, FLAGS_BOX_W, WHITE, BLACK,
+          "Регистр флагов", RED, BLACK);
 
   bc_box (IC_BOX_ROW, IC_BOX_COL, IC_BOX_H, IC_BOX_W, WHITE, BLACK,
           "Счетчик команд", RED, BLACK);
@@ -114,11 +114,11 @@ draw_boxes (void)
   bc_box (DECODE_BOX_ROW, DECODE_BOX_COL, DECODE_BOX_H, DECODE_BOX_W, WHITE,
           BLACK, "Редактируемая ячейка (формат)", RED, WHITE);
 
-  bc_box (CACHE_BOX_ROW, CACHE_BOX_COL, CACHE_BOX_H, CACHE_BOX_W, WHITE,
-          BLACK, "Кеш процессора", GREEN, WHITE);
+  bc_box (CACHE_BOX_ROW, CACHE_BOX_COL, CACHE_BOX_H, CACHE_BOX_W, WHITE, BLACK,
+          "Кеш процессора", GREEN, WHITE);
 
-  bc_box (INOUT_BOX_ROW, INOUT_BOX_COL, INOUT_BOX_H, INOUT_BOX_W, WHITE,
-          BLACK, "IN--OUT", GREEN, WHITE);
+  bc_box (INOUT_BOX_ROW, INOUT_BOX_COL, INOUT_BOX_H, INOUT_BOX_W, WHITE, BLACK,
+          "IN--OUT", GREEN, WHITE);
 
   bc_box (KEYS_BOX_ROW, KEYS_BOX_COL, KEYS_BOX_H, KEYS_BOX_W, WHITE, BLACK,
           "Клавиши", GREEN, WHITE);
@@ -129,7 +129,7 @@ print_keys (void)
 {
   mt_setfgcolor (WHITE);
   mt_setbgcolor (BLACK);
-  mt_gotoXY (KEYS_BOX_ROW + 1, KEYS_BOX_COL + 1); 
+  mt_gotoXY (KEYS_BOX_ROW + 1, KEYS_BOX_COL + 1);
   printf ("l - load  s - save i - reset");
   mt_gotoXY (KEYS_BOX_ROW + 2, KEYS_BOX_COL + 1);
   printf ("r - run   t - step");
@@ -142,7 +142,6 @@ print_keys (void)
   fflush (stdout);
   mt_setdefaultcolor ();
 }
-
 
 static int
 hex_to_fontidx (int hex_digit)
@@ -201,8 +200,7 @@ main (int argc, char *argv[])
 
   if (mt_getscreensize (&rows, &cols) != 0)
     {
-      fprintf (stderr,
-               "Ошибка: не удалось определить размер терминала.\n");
+      fprintf (stderr, "Ошибка: не удалось определить размер терминала.\n");
       return 1;
     }
   if (rows < MIN_ROWS || cols < MIN_COLS)
@@ -216,8 +214,7 @@ main (int argc, char *argv[])
 
   if (load_font (font_file) != 0)
     {
-      fprintf (stderr,
-               "Ошибка: не удалось загрузить шрифт из '%s'.\n",
+      fprintf (stderr, "Ошибка: не удалось загрузить шрифт из '%s'.\n",
                font_file);
       return 1;
     }

@@ -8,7 +8,7 @@ printFlags (void)
 
   mt_gotoXY (FLAGS_ROW, FLAGS_COL);
   mt_setfgcolor (WHITE);
-  mt_setbgcolor (BLACK);           
+  mt_setbgcolor (BLACK);
 
   sc_regGet (SC_FLAG_OVERFLOW, &v);
   printf ("%c ", v ? 'P' : '_');

@@ -3,9 +3,8 @@
 #include <unistd.h>
 
 int
-bc_box (int x1, int y1, int x2, int y2, enum colors box_fg,
-        enum colors box_bg, char *header, enum colors header_fg,
-        enum colors header_bg)
+bc_box (int x1, int y1, int x2, int y2, enum colors box_fg, enum colors box_bg,
+        char *header, enum colors header_fg, enum colors header_bg)
 {
   if (x2 < 2 || y2 < 2)
     return -1;
