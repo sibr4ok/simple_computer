@@ -60,42 +60,32 @@
 #define SC_IC(low) ((low)&0x7F)
 
 #define MEMORY_ROW 2
-#define MEMORY_COL 1
+#define MEMORY_COL 2          // было 1 (чтобы ячейки были внутри рамки)
 #define MEMORY_COLS_NUM 10
 
-#define ACC_LABEL_ROW 1
-#define ACC_LABEL_COL 62
 #define ACC_ROW 2
-#define ACC_COL 62
+#define ACC_COL 64            // было 62
 
-#define FLAGS_LABEL_ROW 1
-#define FLAGS_LABEL_COL 84
 #define FLAGS_ROW 2
-#define FLAGS_COL 84
+#define FLAGS_COL 83          // было 84
 
-#define IC_LABEL_ROW 3
-#define IC_LABEL_COL 62
 #define IC_ROW 4
-#define IC_COL 62
+#define IC_COL 64             // было 62
 
-#define CMD_LABEL_ROW 3
-#define CMD_LABEL_COL 84
 #define CMD_ROW 4
-#define CMD_COL 84
+#define CMD_COL 83            // было 84
 
 #define INOUT_ROW 18
-#define INOUT_COL 64
+#define INOUT_COL 64          // было 64 (оставить)
 #define INOUT_LINES 5
 
-#define DECODE_LABEL_ROW 15
-#define DECODE_LABEL_COL 14
-#define DECODE_ROW 16
-#define DECODE_COL 1
+#define DECODE_ROW 17         // было 16
+#define DECODE_COL 2          // было 1
 
 #define EDITCELL_ROW 16
 #define EDITCELL_COL 55
 
-#define MIN_ROWS 25
+#define MIN_ROWS 28
 #define MIN_COLS 100
 
 int sc_from_decimal (int decimal);

@@ -21,56 +21,56 @@
 #define MEM_BOX_ROW 1
 #define MEM_BOX_COL 1
 #define MEM_BOX_H 15
-#define MEM_BOX_W 61
+#define MEM_BOX_W 62          // было 61
 
 #define ACC_BOX_ROW 1
-#define ACC_BOX_COL 62
+#define ACC_BOX_COL 63        // было 62
 #define ACC_BOX_H 2
-#define ACC_BOX_W 21
+#define ACC_BOX_W 19          // было 21
 
 #define FLAGS_BOX_ROW 1
-#define FLAGS_BOX_COL 83
+#define FLAGS_BOX_COL 82      // было 83
 #define FLAGS_BOX_H 2
-#define FLAGS_BOX_W 18
+#define FLAGS_BOX_W 19        // было 18
 
 #define IC_BOX_ROW 3
-#define IC_BOX_COL 62
+#define IC_BOX_COL 63         // было 62
 #define IC_BOX_H 2
-#define IC_BOX_W 21
+#define IC_BOX_W 19           // было 21
 
 #define CMD_BOX_ROW 3
-#define CMD_BOX_COL 83
+#define CMD_BOX_COL 82        // было 83
 #define CMD_BOX_H 2
-#define CMD_BOX_W 18
+#define CMD_BOX_W 19          // было 18
 
 #define BIGCELL_BOX_ROW 5
-#define BIGCELL_BOX_COL 62
+#define BIGCELL_BOX_COL 63    // было 62
 #define BIGCELL_BOX_H 11
-#define BIGCELL_BOX_W 39
+#define BIGCELL_BOX_W 38      // было 39
 
-#define DECODE_BOX_ROW 15
+#define DECODE_BOX_ROW 16     // было 15
 #define DECODE_BOX_COL 1
 #define DECODE_BOX_H 3
-#define DECODE_BOX_W 61
+#define DECODE_BOX_W 62       // было 61
 
-#define CACHE_BOX_ROW 18
+#define CACHE_BOX_ROW 19      // было 18
 #define CACHE_BOX_COL 1
 #define CACHE_BOX_H 7
-#define CACHE_BOX_W 61
+#define CACHE_BOX_W 62        // было 61
 
 #define INOUT_BOX_ROW 17
-#define INOUT_BOX_COL 62
+#define INOUT_BOX_COL 63      // было 62
 #define INOUT_BOX_H 8
-#define INOUT_BOX_W 18
+#define INOUT_BOX_W 19        // было 18
 
 #define KEYS_BOX_ROW 17
-#define KEYS_BOX_COL 80
+#define KEYS_BOX_COL 82       // было 80
 #define KEYS_BOX_H 8
-#define KEYS_BOX_W 21
+#define KEYS_BOX_W 19         // было 21
 
 /* Big cell area */
 #define BIGCELL_CHAR_ROW 6
-#define BIGCELL_CHAR_COL 65
+#define BIGCELL_CHAR_COL 66   // было 65
 
 static int bigfont[FONT_SIZE][2];
 
@@ -96,8 +96,8 @@ static void
 draw_boxes (void)
 {
   /* Оперативная память */
-  bc_box (MEM_BOX_ROW, MEM_BOX_COL, MEM_BOX_H, MEM_BOX_W, GREEN, BLACK,
-          "Оперативная память", RED, GREEN);
+  bc_box (MEM_BOX_ROW, MEM_BOX_COL, MEM_BOX_H, MEM_BOX_W, WHITE, BLACK,
+          "Оперативная память", RED, BLACK);
 
   /* Аккумулятор */
   bc_box (ACC_BOX_ROW, ACC_BOX_COL, ACC_BOX_H, ACC_BOX_W, GREEN, BLACK,
