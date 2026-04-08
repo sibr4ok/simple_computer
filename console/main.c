@@ -15,7 +15,7 @@
 #define TEST_FL_IGNORE 1
 #define TEST_FL_INVCMD 1
 
-#define TEST_EDIT_CELL 126
+#define TEST_EDIT_CELL 1
 
 #define MEM_BOX_ROW 1
 #define MEM_BOX_COL 1
@@ -224,7 +224,7 @@ main (int argc, char *argv[])
   sc_icounterInit ();
   sc_regInit ();
 
-  sc_memorySet (0, SC_VAL (0, 0x34, 0x34));
+  // sc_memorySet (0, SC_VAL (0, 0x34, 0x34));
   sc_memorySet (1, SC_VAL (0, 0x10, 0x00));
   sc_memorySet (2, SC_VAL (0, 0x11, 0x02));
   sc_memorySet (3, SC_VAL (0, 0x11, 0x03));
@@ -247,7 +247,11 @@ main (int argc, char *argv[])
   sc_memorySet (126, sc_from_decimal (-2));
 
   sc_accumulatorSet (sc_from_decimal (-2));
-  sc_icounterSet (126);
+
+  sc_icounterSet (0);
+  sc_memorySet (0, SC_VAL (0, SC_CMD_HALT, 0x00));
+  // sc_memorySet(0, SC_VAL(0, 0x12, 0x34));
+
   sc_regSet (SC_FLAG_OVERFLOW, TEST_FL_OVERFLOW);
   sc_regSet (SC_FLAG_DIVISION_ZERO, TEST_FL_DIVZERO);
   sc_regSet (SC_FLAG_OUT_OF_MEMORY, TEST_FL_OUTMEM);

@@ -19,45 +19,55 @@
 #define SC_COMMAND_MASK 0x3F80
 #define SC_OPERAND_MASK 0x007F
 
+/* Команды строго по таблице (hex-коды) */
 #define SC_CMD_NOP 0x00
-#define SC_CMD_READ 0x10
-#define SC_CMD_WRITE 0x11
-#define SC_CMD_LOAD 0x20
-#define SC_CMD_STORE 0x21
-#define SC_CMD_ADD 0x30
-#define SC_CMD_SUB 0x31
-#define SC_CMD_DIVIDE 0x32
-#define SC_CMD_MUL 0x33
-#define SC_CMD_MOD 0x34
-#define SC_CMD_JUMP 0x40
-#define SC_CMD_JNEG 0x41
-#define SC_CMD_JZ 0x42
-#define SC_CMD_HALT 0x43
-#define SC_CMD_NOT 0x51
-#define SC_CMD_AND 0x52
-#define SC_CMD_OR 0x53
-#define SC_CMD_XOR 0x54
-#define SC_CMD_JNS 0x55
-#define SC_CMD_JC 0x56
-#define SC_CMD_JNC 0x57
-#define SC_CMD_JP 0x58
-#define SC_CMD_JNP 0x59
-#define SC_CMD_CHL 0x60
-#define SC_CMD_CHR 0x61
-#define SC_CMD_RCL 0x62
-#define SC_CMD_RCR 0x63
-#define SC_CMD_NEG 0x64
-#define SC_CMD_ADDC 0x65
-#define SC_CMD_SUBC 0x66
-#define SC_CMD_LOGLC 0x67
-#define SC_CMD_LOGRC 0x68
-#define SC_CMD_RLOGCL 0x69
-#define SC_CMD_RLOGCR 0x6A
-#define SC_CMD_MWRITE 0x6B
-#define SC_CMD_MREAD 0x6C
+#define SC_CMD_CPUINFO 0x01
+
+#define SC_CMD_READ 0x0A
+#define SC_CMD_WRITE 0x0B
+
+#define SC_CMD_LOAD 0x14
+#define SC_CMD_STORE 0x15
+
+#define SC_CMD_ADD 0x1E
+#define SC_CMD_SUB 0x1F
+#define SC_CMD_DIVIDE 0x20
+#define SC_CMD_MUL 0x21
+
+#define SC_CMD_JUMP 0x28
+#define SC_CMD_JNEG 0x29
+#define SC_CMD_JZ 0x2A
+#define SC_CMD_HALT 0x2B
+
+#define SC_CMD_NOT 0x33
+#define SC_CMD_AND 0x34
+#define SC_CMD_OR 0x35
+#define SC_CMD_XOR 0x36
+#define SC_CMD_JNS 0x37
+#define SC_CMD_JC 0x38
+#define SC_CMD_JNC 0x39
+#define SC_CMD_JP 0x3A
+#define SC_CMD_JNP 0x3B
+#define SC_CMD_CHL 0x3C
+#define SC_CMD_SHR 0x3D
+#define SC_CMD_RCL 0x3E
+#define SC_CMD_RCR 0x3F
+#define SC_CMD_NEG 0x40
+#define SC_CMD_ADDC 0x41
+#define SC_CMD_SUBC 0x42
+#define SC_CMD_LOGLC 0x43
+#define SC_CMD_LOGRC 0x44
+#define SC_CMD_RCCL 0x45
+#define SC_CMD_RCCR 0x46
+#define SC_CMD_MOVA 0x47
+#define SC_CMD_MOVR 0x48
+#define SC_CMD_MOVCA 0x49
+#define SC_CMD_MOVCR 0x4A
+#define SC_CMD_ADDCM 0x4B
+#define SC_CMD_SUBCM 0x4C
 
 #define SC_VAL(sign, high, low) (((sign) << 14) | ((high) << 7) | (low))
-#define SC_IC(low) ((low) & 0x7F)
+#define SC_IC(low) ((low)&0x7F)
 
 #define MEMORY_ROW 2
 #define MEMORY_COL 2

@@ -12,5 +12,6 @@ sc_commandDecode (int value, int *sign, int *command, int *operand)
   *sign = (value >> 14) & 0x01;
   *command = (value >> 7) & 0x7F;
   *operand = value & 0x7F;
+
   return 0;
 }
