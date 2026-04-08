@@ -223,13 +223,10 @@ move_cursor (int new_cell)
   int old_cell = current_cell;
   current_cell = new_cell;
 
-  /* Перерисовать старую ячейку обычным цветом */
   printCell (old_cell, WHITE, BLACK);
 
-  /* Подсветить новую ячейку */
   printCell (current_cell, BLACK, GREEN);
 
-  /* Обновить блоки декодирования и больших символов */
   update_current_cell_display ();
 }
 
@@ -268,13 +265,12 @@ handle_arrow (enum keys key)
 
   int new_cell = row * MEMORY_COLS_NUM + col;
 
-  /* Если вышли за пределы памяти (последняя неполная строка), скорректировать */
   if (new_cell >= SC_MEMORY_SIZE)
     {
       if (key == KEY_DOWN)
-        new_cell = col; /* Перейти в начало столбца */
+        new_cell = col;
       else if (key == KEY_RIGHT)
-        new_cell = row * MEMORY_COLS_NUM; /* Перейти в начало строки */
+        new_cell = row * MEMORY_COLS_NUM;
       else if (key == KEY_LEFT)
         new_cell = SC_MEMORY_SIZE - 1;
       else
@@ -292,7 +288,6 @@ handle_arrow (enum keys key)
 static void
 edit_cell_inplace (int address)
 {
-  /* Позиция ячейки на экране */
   int row = MEMORY_ROW + (address / MEMORY_COLS_NUM);
   int col = MEMORY_COL + (address % MEMORY_COLS_NUM) * 6;
 
@@ -310,9 +305,9 @@ edit_cell_inplace (int address)
   if (rc == 0)
     {
       sc_memorySet (address, new_value);
+      printTerm (address, 0);
     }
 
-  /* Перерисовать ячейку */
   printCell (address, BLACK, GREEN);
   update_current_cell_display ();
   printCommand ();
@@ -322,7 +317,7 @@ edit_cell_inplace (int address)
 static void
 edit_accumulator_inplace (void)
 {
-  mt_gotoXY (ACC_ROW, ACC_COL + 4); /* После "sc: " */
+  mt_gotoXY (ACC_ROW, ACC_COL + 4);
   mt_setfgcolor (BLACK);
   mt_setbgcolor (YELLOW);
   mt_setcursorvisible (1);
@@ -345,7 +340,7 @@ edit_accumulator_inplace (void)
 static void
 edit_icounter_inplace (void)
 {
-  mt_gotoXY (IC_ROW, IC_COL + 12); /* После "T: XX     IC: " */
+  mt_gotoXY (IC_ROW, IC_COL + 12);
   mt_setfgcolor (BLACK);
   mt_setbgcolor (YELLOW);
   mt_setcursorvisible (1);
@@ -428,7 +423,6 @@ main (int argc, char *argv[])
       return 1;
     }
 
-  /* Сохранить параметры терминала и переключить в неканонический режим */
   rk_mytermsave ();
   rk_mytermregime (1, 0, 1, 0, 0);
 
@@ -443,7 +437,6 @@ main (int argc, char *argv[])
 
   redraw_all ();
 
-  /* Главный интерактивный цикл */
   enum keys key;
   int running = 1;
 
@@ -494,7 +487,6 @@ main (int argc, char *argv[])
         }
     }
 
-  /* Восстановить терминал */
   mt_gotoXY (MIN_ROWS, 1);
   mt_setcursorvisible (1);
   mt_setdefaultcolor ();

@@ -87,10 +87,8 @@ rk_readkey (enum keys *key)
       return 0;
     }
 
-  /* Escape-последовательности */
   if (buf[0] == 27 && n >= 3 && buf[1] == '[')
     {
-      /* Стрелки: ESC [ A/B/C/D */
       if (n == 3)
         {
           switch (buf[2])
@@ -110,32 +108,25 @@ rk_readkey (enum keys *key)
             }
         }
 
-      /* F5: ESC [ 1 5 ~ */
       if (n == 5 && buf[2] == '1' && buf[3] == '5' && buf[4] == '~')
         {
           *key = KEY_F5;
           return 0;
         }
 
-      /* F6: ESC [ 1 7 ~ */
       if (n == 5 && buf[2] == '1' && buf[3] == '7' && buf[4] == '~')
         {
           *key = KEY_F6;
           return 0;
         }
 
-      /* Альтернативный F5: ESC [ [ E (некоторые терминалы Linux) */
       if (n == 4 && buf[2] == '[' && buf[3] == 'E')
         {
           *key = KEY_F5;
           return 0;
         }
-
-      /* Альтернативный F6: ESC [ [ F (некоторые терминалы Linux) */
-      /* Примечание: в linux console F6 обычно ESC [[17~ или ESC [17~ */
     }
 
-  /* Escape-последовательность ESC O (некоторые терминалы) */
   if (buf[0] == 27 && n >= 3 && buf[1] == 'O')
     {
       switch (buf[2])

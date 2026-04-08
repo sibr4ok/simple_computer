@@ -67,7 +67,7 @@
 #define SC_CMD_SUBCM 0x4C
 
 #define SC_VAL(sign, high, low) (((sign) << 14) | ((high) << 7) | (low))
-#define SC_IC(low) ((low)&0x7F)
+#define SC_IC(low) ((low) & 0x7F)
 
 #define MEMORY_ROW 2
 #define MEMORY_COL 2

@@ -28,20 +28,17 @@ rk_readvalue (int *value, int timeout)
   if (value == NULL)
     return -1;
 
-  /* Переключаемся в режим ввода */
   if (timeout > 0)
-    rk_mytermregime (1, timeout, 0, 0, 0);  /* с таймаутом */
+    rk_mytermregime (1, timeout, 0, 0, 0);
   else
-    rk_mytermregime (1, 0, 1, 0, 0);        /* блокирующее чтение (VMIN=1) */
+    rk_mytermregime (1, 0, 1, 0, 0);
 
-  /* Формат ввода: ±XXXX (знак + 4 hex-цифры) */
   int sign = 0;
   int digits[4] = { 0, 0, 0, 0 };
   int pos = 0;
   int done = 0;
   int result = -1;
 
-  /* Показать начальное значение */
   printf ("+0000");
   fflush (stdout);
   printf ("\033[5D");
@@ -53,7 +50,7 @@ rk_readvalue (int *value, int timeout)
       int rc = rk_readkey (&key);
 
       if (rc != 0)
-        continue;  /* <-- теперь просто повторяем при любой ошибке */
+        continue;
 
       if (key == KEY_ESC)
         {
@@ -104,7 +101,6 @@ rk_readvalue (int *value, int timeout)
         }
     }
 
-  /* Восстанавливаем обычный режим */
   rk_mytermregime (1, 0, 1, 0, 0);
 
   return result;

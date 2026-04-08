@@ -11,12 +11,10 @@ rk_mytermregime (int regime, int vtime, int vmin, int echo, int sigint)
 
   if (regime == 0)
     {
-      /* Канонический режим */
       t.c_lflag |= ICANON;
     }
   else
     {
-      /* Неканонический режим */
       t.c_lflag &= ~ICANON;
       t.c_cc[VTIME] = vtime;
       t.c_cc[VMIN] = vmin;
