@@ -1,4 +1,4 @@
-all: mySimpleComputer myTerm myBigChars console
+all: mySimpleComputer myTerm myBigChars myReadKey console
 
 mySimpleComputer:
 	$(MAKE) -C mySimpleComputer
@@ -9,7 +9,10 @@ myTerm:
 myBigChars:
 	$(MAKE) -C myBigChars
 
-console: mySimpleComputer myTerm myBigChars
+myReadKey:
+	$(MAKE) -C myReadKey
+
+console: mySimpleComputer myTerm myBigChars myReadKey
 	$(MAKE) -C console
 
 font: console
@@ -22,7 +25,8 @@ clean:
 	$(MAKE) -C mySimpleComputer clean
 	$(MAKE) -C myTerm clean
 	$(MAKE) -C myBigChars clean
+	$(MAKE) -C myReadKey clean
 	$(MAKE) -C console clean
 	rm -f console/font.bin
 
-.PHONY: all mySimpleComputer myTerm myBigChars console font run clean
+.PHONY: all mySimpleComputer myTerm myBigChars myReadKey console font run clean

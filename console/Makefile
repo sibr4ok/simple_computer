@@ -10,11 +10,12 @@ OBJS = $(SRCS:.c=.o)
 SC_LIB = ../mySimpleComputer/libmySimpleComputer.a
 MT_LIB = ../myTerm/libmyTerm.a
 BC_LIB = ../myBigChars/libmyBigChars.a
+RK_LIB = ../myReadKey/libmyReadKey.a
 
 all: $(TARGET) $(FONT_TARGET)
 
-$(TARGET): $(OBJS) $(SC_LIB) $(MT_LIB) $(BC_LIB)
-	$(CC) $(CFLAGS) -o $@ $(OBJS) -Wl,--start-group $(SC_LIB) $(MT_LIB) $(BC_LIB) -Wl,--end-group
+$(TARGET): $(OBJS) $(SC_LIB) $(MT_LIB) $(BC_LIB) $(RK_LIB)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) -Wl,--start-group $(SC_LIB) $(MT_LIB) $(BC_LIB) $(RK_LIB) -Wl,--end-group
 
 $(FONT_TARGET): font.o $(BC_LIB) $(MT_LIB)
 	$(CC) $(CFLAGS) -o $@ font.o -Wl,--start-group $(BC_LIB) $(MT_LIB) -Wl,--end-group
@@ -30,6 +31,9 @@ $(MT_LIB):
 
 $(BC_LIB):
 	$(MAKE) -C ../myBigChars
+
+$(RK_LIB):
+	$(MAKE) -C ../myReadKey
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

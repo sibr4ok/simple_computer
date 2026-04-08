@@ -1,4 +1,5 @@
 #include "myBigChars.h"
+#include "myReadKey.h"
 #include "mySimpleComputer.h"
 #include "myTerm.h"
 #include <fcntl.h>
@@ -8,14 +9,7 @@
 
 #define FONT_SIZE 18
 #define DEFAULT_FONT "font.bin"
-
-#define TEST_FL_OVERFLOW 0
-#define TEST_FL_DIVZERO 0
-#define TEST_FL_OUTMEM 0
-#define TEST_FL_IGNORE 1
-#define TEST_FL_INVCMD 1
-
-#define TEST_EDIT_CELL 1
+#define DEFAULT_SAVEFILE "memory.bin"
 
 #define MEM_BOX_ROW 1
 #define MEM_BOX_COL 1
@@ -71,6 +65,7 @@
 #define BIGCELL_CHAR_COL 66
 
 static int bigfont[FONT_SIZE][2];
+static int current_cell = 0;
 
 static int
 load_font (const char *filename)
@@ -151,11 +146,11 @@ hex_to_fontidx (int hex_digit)
   return 0;
 }
 
-void
+static void
 printBigCell (void)
 {
   int raw;
-  sc_memoryGet (TEST_EDIT_CELL, &raw);
+  sc_memoryGet (current_cell, &raw);
 
   int sign = (raw >> 14) & 0x01;
   int high7 = (raw >> 7) & 0x7F;
@@ -178,9 +173,223 @@ printBigCell (void)
   mt_gotoXY (BIGCELL_CHAR_ROW + 8, BIGCELL_BOX_COL + 2);
   mt_setfgcolor (BLUE);
   mt_setbgcolor (BLACK);
-  printf ("Номер редактируемой ячейки: %03d", TEST_EDIT_CELL);
+  printf ("Номер редактируемой ячейки: %03d", current_cell);
   fflush (stdout);
   mt_setdefaultcolor ();
+}
+
+static void
+update_current_cell_display (void)
+{
+  int raw;
+  sc_memoryGet (current_cell, &raw);
+  printDecodedCommand (raw);
+  printBigCell ();
+}
+
+static void
+draw_all_cells (void)
+{
+  for (int i = 0; i < SC_MEMORY_SIZE; i++)
+    {
+      if (i == current_cell)
+        printCell (i, BLACK, GREEN);
+      else
+        printCell (i, WHITE, BLACK);
+    }
+}
+
+static void
+redraw_all (void)
+{
+  mt_clrscr ();
+  draw_boxes ();
+  draw_all_cells ();
+  printAccumulator ();
+  printFlags ();
+  printCounters ();
+  printCommand ();
+  update_current_cell_display ();
+  print_keys ();
+  fflush (stdout);
+}
+
+static void
+move_cursor (int new_cell)
+{
+  if (new_cell < 0 || new_cell >= SC_MEMORY_SIZE)
+    return;
+
+  int old_cell = current_cell;
+  current_cell = new_cell;
+
+  /* Перерисовать старую ячейку обычным цветом */
+  printCell (old_cell, WHITE, BLACK);
+
+  /* Подсветить новую ячейку */
+  printCell (current_cell, BLACK, GREEN);
+
+  /* Обновить блоки декодирования и больших символов */
+  update_current_cell_display ();
+}
+
+static void
+handle_arrow (enum keys key)
+{
+  int row = current_cell / MEMORY_COLS_NUM;
+  int col = current_cell % MEMORY_COLS_NUM;
+  int total_rows = (SC_MEMORY_SIZE + MEMORY_COLS_NUM - 1) / MEMORY_COLS_NUM;
+
+  switch (key)
+    {
+    case KEY_LEFT:
+      col--;
+      if (col < 0)
+        col = MEMORY_COLS_NUM - 1;
+      break;
+    case KEY_RIGHT:
+      col++;
+      if (col >= MEMORY_COLS_NUM)
+        col = 0;
+      break;
+    case KEY_UP:
+      row--;
+      if (row < 0)
+        row = total_rows - 1;
+      break;
+    case KEY_DOWN:
+      row++;
+      if (row >= total_rows)
+        row = 0;
+      break;
+    default:
+      return;
+    }
+
+  int new_cell = row * MEMORY_COLS_NUM + col;
+
+  /* Если вышли за пределы памяти (последняя неполная строка), скорректировать */
+  if (new_cell >= SC_MEMORY_SIZE)
+    {
+      if (key == KEY_DOWN)
+        new_cell = col; /* Перейти в начало столбца */
+      else if (key == KEY_RIGHT)
+        new_cell = row * MEMORY_COLS_NUM; /* Перейти в начало строки */
+      else if (key == KEY_LEFT)
+        new_cell = SC_MEMORY_SIZE - 1;
+      else
+        new_cell = SC_MEMORY_SIZE - 1;
+    }
+
+  if (new_cell < 0)
+    new_cell = 0;
+  if (new_cell >= SC_MEMORY_SIZE)
+    new_cell = SC_MEMORY_SIZE - 1;
+
+  move_cursor (new_cell);
+}
+
+static void
+edit_cell_inplace (int address)
+{
+  /* Позиция ячейки на экране */
+  int row = MEMORY_ROW + (address / MEMORY_COLS_NUM);
+  int col = MEMORY_COL + (address % MEMORY_COLS_NUM) * 6;
+
+  mt_gotoXY (row, col);
+  mt_setfgcolor (BLACK);
+  mt_setbgcolor (YELLOW);
+  mt_setcursorvisible (1);
+  fflush (stdout);
+
+  int new_value = 0;
+  int rc = rk_readvalue (&new_value, 0);
+
+  mt_setcursorvisible (0);
+
+  if (rc == 0)
+    {
+      sc_memorySet (address, new_value);
+    }
+
+  /* Перерисовать ячейку */
+  printCell (address, BLACK, GREEN);
+  update_current_cell_display ();
+  printCommand ();
+  fflush (stdout);
+}
+
+static void
+edit_accumulator_inplace (void)
+{
+  mt_gotoXY (ACC_ROW, ACC_COL + 4); /* После "sc: " */
+  mt_setfgcolor (BLACK);
+  mt_setbgcolor (YELLOW);
+  mt_setcursorvisible (1);
+  fflush (stdout);
+
+  int new_value = 0;
+  int rc = rk_readvalue (&new_value, 0);
+
+  mt_setcursorvisible (0);
+
+  if (rc == 0)
+    {
+      sc_accumulatorSet (new_value);
+    }
+
+  printAccumulator ();
+  fflush (stdout);
+}
+
+static void
+edit_icounter_inplace (void)
+{
+  mt_gotoXY (IC_ROW, IC_COL + 12); /* После "T: XX     IC: " */
+  mt_setfgcolor (BLACK);
+  mt_setbgcolor (YELLOW);
+  mt_setcursorvisible (1);
+  fflush (stdout);
+
+  int new_value = 0;
+  int rc = rk_readvalue (&new_value, 0);
+
+  mt_setcursorvisible (0);
+
+  if (rc == 0)
+    {
+      sc_icounterSet (new_value);
+    }
+
+  printCounters ();
+  printCommand ();
+  fflush (stdout);
+}
+
+static void
+do_load (void)
+{
+  if (sc_memoryLoad (DEFAULT_SAVEFILE) == 0)
+    {
+      redraw_all ();
+    }
+}
+
+static void
+do_save (void)
+{
+  sc_memorySave (DEFAULT_SAVEFILE);
+}
+
+static void
+do_reset (void)
+{
+  sc_memoryInit ();
+  sc_regInit ();
+  sc_accumulatorInit ();
+  sc_icounterInit ();
+  current_cell = 0;
+  redraw_all ();
 }
 
 int
@@ -219,83 +428,77 @@ main (int argc, char *argv[])
       return 1;
     }
 
+  /* Сохранить параметры терминала и переключить в неканонический режим */
+  rk_mytermsave ();
+  rk_mytermregime (1, 0, 1, 0, 0);
+
   sc_memoryInit ();
   sc_accumulatorInit ();
   sc_icounterInit ();
   sc_regInit ();
 
-  // sc_memorySet (0, SC_VAL (0, 0x34, 0x34));
-  sc_memorySet (1, SC_VAL (0, 0x10, 0x00));
-  sc_memorySet (2, SC_VAL (0, 0x11, 0x02));
-  sc_memorySet (3, SC_VAL (0, 0x11, 0x03));
-  sc_memorySet (4, SC_VAL (0, 0x11, 0x04));
-  sc_memorySet (5, SC_VAL (0, 0x11, 0x05));
-  sc_memorySet (6, SC_VAL (0, 0x11, 0x06));
-  sc_memorySet (7, SC_VAL (0, 0x11, 0x07));
-  sc_memorySet (8, SC_VAL (0, 0x11, 0x08));
-  sc_memorySet (9, SC_VAL (0, 0x11, 0x09));
-  sc_memorySet (10, SC_VAL (0, 0x11, 0x20));
-  sc_memorySet (11, SC_VAL (0, 0x11, 0x39));
-  sc_memorySet (12, SC_VAL (0, 0x11, 0x40));
-  sc_memorySet (13, SC_VAL (0, 0x11, 0x57));
-  sc_memorySet (14, SC_VAL (0, 0x00, 0x01));
-  sc_memorySet (15, SC_VAL (0, 0x20, 0x7F));
-  sc_memorySet (16, SC_VAL (0, 0x30, 0x7E));
-  sc_memorySet (50, SC_VAL (0, 0x03, 0x7F));
-  sc_memorySet (125, SC_VAL (0, 0x00, 0x01));
-  sc_memorySet (127, SC_VAL (0, 0x7F, 0x7F));
-  sc_memorySet (126, sc_from_decimal (-2));
-
-  sc_accumulatorSet (sc_from_decimal (-2));
-
-  sc_icounterSet (0);
-  sc_memorySet (0, SC_VAL (0, SC_CMD_HALT, 0x00));
-  // sc_memorySet(0, SC_VAL(0, 0x12, 0x34));
-
-  sc_regSet (SC_FLAG_OVERFLOW, TEST_FL_OVERFLOW);
-  sc_regSet (SC_FLAG_DIVISION_ZERO, TEST_FL_DIVZERO);
-  sc_regSet (SC_FLAG_OUT_OF_MEMORY, TEST_FL_OUTMEM);
-  sc_regSet (SC_FLAG_IGNORE_PULSE, TEST_FL_IGNORE);
-  sc_regSet (SC_FLAG_INVALID_CMD, TEST_FL_INVCMD);
-
   mt_clrscr ();
   mt_setcursorvisible (0);
   setbuf (stdout, NULL);
 
-  draw_boxes ();
+  redraw_all ();
 
-  for (int i = 0; i < SC_MEMORY_SIZE; i++)
+  /* Главный интерактивный цикл */
+  enum keys key;
+  int running = 1;
+
+  while (running)
     {
-      if (i == TEST_EDIT_CELL)
-        printCell (i, BLACK, WHITE);
-      else
-        printCell (i, WHITE, BLACK);
+      if (rk_readkey (&key) != 0)
+        continue;
+
+      switch (key)
+        {
+        case KEY_UP:
+        case KEY_DOWN:
+        case KEY_LEFT:
+        case KEY_RIGHT:
+          handle_arrow (key);
+          break;
+
+        case KEY_ENTER:
+          edit_cell_inplace (current_cell);
+          break;
+
+        case KEY_ESC:
+          running = 0;
+          break;
+
+        case KEY_F5:
+          edit_accumulator_inplace ();
+          break;
+
+        case KEY_F6:
+          edit_icounter_inplace ();
+          break;
+
+        case KEY_L:
+          do_load ();
+          break;
+
+        case KEY_S:
+          do_save ();
+          break;
+
+        case KEY_I:
+          do_reset ();
+          break;
+
+        default:
+          break;
+        }
     }
 
-  printAccumulator ();
-  printFlags ();
-  printCounters ();
-  printCommand ();
-
-  printTerm (0, 0);
-  printTerm (1, 0);
-  printTerm (2, 0);
-  printTerm (124, 0);
-  printTerm (125, 0);
-  printTerm (126, 0);
-  printTerm (127, 0);
-
-  int raw;
-  sc_memoryGet (TEST_EDIT_CELL, &raw);
-  printDecodedCommand (raw);
-
-  printBigCell ();
-
-  print_keys ();
-
+  /* Восстановить терминал */
   mt_gotoXY (MIN_ROWS, 1);
   mt_setcursorvisible (1);
   mt_setdefaultcolor ();
+  rk_mytermrestore ();
 
   return 0;
 }
