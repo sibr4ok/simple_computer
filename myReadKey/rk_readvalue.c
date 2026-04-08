@@ -28,20 +28,22 @@ rk_readvalue (int *value, int timeout)
   if (value == NULL)
     return -1;
 
-  /* Переключаемся в режим с таймаутом для ввода */
-  rk_mytermregime (1, timeout, 0, 0, 0);
+  /* Переключаемся в режим ввода */
+  if (timeout > 0)
+    rk_mytermregime (1, timeout, 0, 0, 0);  /* с таймаутом */
+  else
+    rk_mytermregime (1, 0, 1, 0, 0);        /* блокирующее чтение (VMIN=1) */
 
   /* Формат ввода: ±XXXX (знак + 4 hex-цифры) */
-  int sign = 0;       /* 0 = '+', 1 = '-' */
+  int sign = 0;
   int digits[4] = { 0, 0, 0, 0 };
-  int pos = 0;        /* 0=sign, 1..4=hex digits */
+  int pos = 0;
   int done = 0;
   int result = -1;
 
   /* Показать начальное значение */
   printf ("+0000");
   fflush (stdout);
-  /* Вернуть курсор на начало ввода */
   printf ("\033[5D");
   fflush (stdout);
 
@@ -51,29 +53,17 @@ rk_readvalue (int *value, int timeout)
       int rc = rk_readkey (&key);
 
       if (rc != 0)
-        {
-          /* Таймаут или ошибка — при timeout > 0 это нормально, просто
-           * продолжаем */
-          if (timeout > 0)
-            continue;
-          else
-            {
-              result = -1;
-              done = 1;
-              break;
-            }
-        }
+        continue;  /* <-- теперь просто повторяем при любой ошибке */
 
       if (key == KEY_ESC)
         {
-          result = 1; /* Отмена */
+          result = 1;
           done = 1;
           break;
         }
 
       if (key == KEY_ENTER)
         {
-          /* Собрать значение */
           int high = (digits[0] << 4) | digits[1];
           int low = (digits[2] << 4) | digits[3];
           *value = (sign << 14) | (high << 7) | low;
@@ -84,7 +74,6 @@ rk_readvalue (int *value, int timeout)
 
       if (pos == 0)
         {
-          /* Ожидаем знак */
           if (key == KEY_PLUS)
             {
               sign = 0;
@@ -110,16 +99,12 @@ rk_readvalue (int *value, int timeout)
               fflush (stdout);
               pos++;
               if (pos > 4)
-                {
-                  /* Все цифры введены, ждём ENTER или ESC */
-                  pos = 5;
-                }
+                pos = 5;
             }
         }
-      /* pos == 5: ждём только ENTER или ESC */
     }
 
-  /* Восстанавливаем режим без таймаута */
+  /* Восстанавливаем обычный режим */
   rk_mytermregime (1, 0, 1, 0, 0);
 
   return result;
