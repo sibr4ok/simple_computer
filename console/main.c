@@ -364,16 +364,61 @@ edit_icounter_inplace (void)
 static void
 do_load (void)
 {
-  if (sc_memoryLoad (DEFAULT_SAVEFILE) == 0)
+  char filename[256];
+
+  mt_gotoXY (MIN_ROWS, 1);
+  mt_setfgcolor (WHITE);
+  mt_setbgcolor (BLACK);
+  printf ("%-*s", MIN_COLS, "");  /* очистить строку */
+  mt_gotoXY (MIN_ROWS, 1);
+  printf ("Введите имя файла для загрузки: ");
+  fflush (stdout);
+  mt_setcursorvisible (1);
+  rk_mytermregime (0, 0, 1, 1, 0);
+
+  if (fgets (filename, sizeof (filename), stdin) != NULL)
     {
-      redraw_all ();
+      size_t len = strlen (filename);
+      if (len > 0 && filename[len - 1] == '\n')
+        filename[len - 1] = '\0';
+
+      if (strlen (filename) > 0)
+        sc_memoryLoad (filename);
     }
+
+  rk_mytermregime (1, 0, 1, 0, 0);
+  mt_setcursorvisible (0);
+  redraw_all ();
 }
 
 static void
 do_save (void)
 {
-  sc_memorySave (DEFAULT_SAVEFILE);
+  char filename[256];
+
+  mt_gotoXY (MIN_ROWS, 1);
+  mt_setfgcolor (WHITE);
+  mt_setbgcolor (BLACK);
+  printf ("%-*s", MIN_COLS, "");  /* очистить строку */
+  mt_gotoXY (MIN_ROWS, 1);
+  printf ("Введите имя файла для сохранения: ");
+  fflush (stdout);
+  mt_setcursorvisible (1);
+  rk_mytermregime (0, 0, 1, 1, 0);
+
+  if (fgets (filename, sizeof (filename), stdin) != NULL)
+    {
+      size_t len = strlen (filename);
+      if (len > 0 && filename[len - 1] == '\n')
+        filename[len - 1] = '\0';
+
+      if (strlen (filename) > 0)
+        sc_memorySave (filename);
+    }
+
+  rk_mytermregime (1, 0, 1, 0, 0);
+  mt_setcursorvisible (0);
+  redraw_all ();
 }
 
 static void
@@ -383,6 +428,7 @@ do_reset (void)
   sc_regInit ();
   sc_accumulatorInit ();
   sc_icounterInit ();
+  resetTerm ();
   current_cell = 0;
   redraw_all ();
 }

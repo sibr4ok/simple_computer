@@ -91,6 +91,11 @@ rk_readvalue (int *value, int timeout)
           int hv = key_to_hex (key);
           if (hv >= 0)
             {
+              /* Позиции 1 и 3 (digits[0] и digits[2]) — старшие полубайты
+                 7-битных полей (макс 0x7F), поэтому макс цифра = 7 */
+              if ((pos == 1 || pos == 3) && hv > 7)
+                continue;
+
               digits[pos - 1] = hv;
               printf ("%c", hex_char (hv));
               fflush (stdout);

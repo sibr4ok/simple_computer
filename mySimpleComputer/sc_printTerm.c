@@ -6,13 +6,20 @@ static char inout_buf[INOUT_LINES][32];
 static int inout_count = 0;
 
 void
+resetTerm (void)
+{
+  memset (inout_buf, 0, sizeof (inout_buf));
+  inout_count = 0;
+}
+
+void
 printTerm (int address, int input)
 {
   char line[32];
 
   if (input)
     {
-      snprintf (line, sizeof (line), "%02X> ", address);
+      snprintf (line, sizeof (line), "%02X< ", address);
     }
   else
     {
@@ -21,7 +28,7 @@ printTerm (int address, int input)
       int sign = (raw >> 14) & 0x01;
       int high7 = (raw >> 7) & 0x7F;
       int low7 = raw & 0x7F;
-      snprintf (line, sizeof (line), "%02X> %c%02X%02X", address,
+      snprintf (line, sizeof (line), "%02X< %c%02X%02X", address,
                 sign ? '-' : '+', high7, low7);
     }
 

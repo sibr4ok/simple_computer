@@ -4,8 +4,26 @@
 static void
 printCommandDefaultError (void)
 {
-  /* IC некорректен или слово не декодируется вообще */
   printf ("! + FF : FF");
+}
+
+static int
+check_any_invalid_cmd (void)
+{
+  for (int i = 0; i < SC_MEMORY_SIZE; i++)
+    {
+      int raw;
+      if (sc_memoryGet (i, &raw) != 0)
+        continue;
+
+      int sign, command, operand;
+      if (sc_commandDecode (raw, &sign, &command, &operand) != 0)
+        return 1;
+
+      if (sc_commandValidate (command) != 0)
+        return 1;
+    }
+  return 0;
 }
 
 void
@@ -14,47 +32,71 @@ printCommand (void)
   int ic_val;
   sc_icounterGet (&ic_val);
 
+  if (check_any_invalid_cmd ())
+    sc_regSet (SC_FLAG_INVALID_CMD, 1);
+  else
+    sc_regSet (SC_FLAG_INVALID_CMD, 0);
+
   mt_gotoXY (CMD_ROW, CMD_COL);
   mt_setfgcolor (WHITE);
   mt_setbgcolor (BLACK);
 
-  /* 1) Некорректный IC -> дефолт по ТЗ */
   if (ic_val < 0 || ic_val >= SC_MEMORY_SIZE)
     {
+      sc_regSet (SC_FLAG_OUT_OF_MEMORY, 1);
+      printFlags ();
+      mt_gotoXY (CMD_ROW, CMD_COL);
+      mt_setfgcolor (WHITE);
+      mt_setbgcolor (BLACK);
       printCommandDefaultError ();
       fflush (stdout);
       mt_setdefaultcolor ();
       return;
     }
 
-  /* 2) Берём слово памяти по IC */
   int raw;
   if (sc_memoryGet (ic_val, &raw) != 0)
     {
+      sc_regSet (SC_FLAG_OUT_OF_MEMORY, 1);
+      printFlags ();
+      mt_gotoXY (CMD_ROW, CMD_COL);
+      mt_setfgcolor (WHITE);
+      mt_setbgcolor (BLACK);
       printCommandDefaultError ();
       fflush (stdout);
       mt_setdefaultcolor ();
       return;
     }
 
-  /* 3) Декодируем поля (знак/код/операнд) */
+  sc_regSet (SC_FLAG_OUT_OF_MEMORY, 0);
+
   int sign, command, operand;
   if (sc_commandDecode (raw, &sign, &command, &operand) != 0)
     {
+      printFlags ();
+      mt_gotoXY (CMD_ROW, CMD_COL);
+      mt_setfgcolor (WHITE);
+      mt_setbgcolor (BLACK);
       printCommandDefaultError ();
       fflush (stdout);
       mt_setdefaultcolor ();
       return;
     }
 
-  /* 4) Валидируем код операции строго по таблице */
   if (sc_commandValidate (command) != 0)
     {
-      /* формат 2: показываем реальные поля, но с '!' */
+      printFlags ();
+      mt_gotoXY (CMD_ROW, CMD_COL);
+      mt_setfgcolor (WHITE);
+      mt_setbgcolor (BLACK);
       printf ("! %c %02X : %02X", sign ? '-' : '+', command, operand);
     }
   else
     {
+      printFlags ();
+      mt_gotoXY (CMD_ROW, CMD_COL);
+      mt_setfgcolor (WHITE);
+      mt_setbgcolor (BLACK);
       printf ("%c %02X : %02X", sign ? '-' : '+', command, operand);
     }
 

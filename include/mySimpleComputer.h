@@ -128,5 +128,6 @@ void printAccumulator (void);
 void printCounters (void);
 void printCommand (void);
 void printTerm (int address, int input);
+void resetTerm (void);
 
 #endif
