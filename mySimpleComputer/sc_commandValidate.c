@@ -28,28 +28,6 @@ sc_commandValidate (int command)
     case SC_CMD_AND:
     case SC_CMD_OR:
     case SC_CMD_XOR:
-    case SC_CMD_JNS:
-    case SC_CMD_JC:
-    case SC_CMD_JNC:
-    case SC_CMD_JP:
-    case SC_CMD_JNP:
-    case SC_CMD_CHL:
-    case SC_CMD_SHR:
-    case SC_CMD_RCL:
-    case SC_CMD_RCR:
-    case SC_CMD_NEG:
-    case SC_CMD_ADDC:
-    case SC_CMD_SUBC:
-    case SC_CMD_LOGLC:
-    case SC_CMD_LOGRC:
-    case SC_CMD_RCCL:
-    case SC_CMD_RCCR:
-    case SC_CMD_MOVA:
-    case SC_CMD_MOVR:
-    case SC_CMD_MOVCA:
-    case SC_CMD_MOVCR:
-    case SC_CMD_ADDCM:
-    case SC_CMD_SUBCM:
       return 0;
 
     default:

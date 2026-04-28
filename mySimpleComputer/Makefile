@@ -30,7 +30,10 @@ SRCS = sc_variables.c \
        sc_printCounters.c \
        sc_printCommand.c \
        sc_printTerm.c \
-       sc_fromDecimal.c
+       sc_fromDecimal.c \
+       sc_cu.c \
+       sc_alu.c \
+       sc_irc.c
 
 OBJS = $(SRCS:.c=.o)
 

@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
+#include <sys/time.h>
 
 #define FONT_SIZE 18
 #define DEFAULT_FONT "font.bin"
@@ -66,6 +68,12 @@
 
 static int bigfont[FONT_SIZE][2];
 static int current_cell = 0;
+static int running_mode = 0; 
+
+extern void IRC(int signum);
+extern void CU(void);
+
+static void stop_run(void);
 
 static int
 load_font (const char *filename)
@@ -131,9 +139,9 @@ print_keys (void)
   mt_gotoXY (KEYS_BOX_ROW + 3, KEYS_BOX_COL + 1);
   printf ("ESC - выход");
   mt_gotoXY (KEYS_BOX_ROW + 4, KEYS_BOX_COL + 1);
-  printf ("F5  - accumulator");
+  printf ("F5 - accumulator");
   mt_gotoXY (KEYS_BOX_ROW + 5, KEYS_BOX_COL + 1);
-  printf ("F6  - instr cntr");
+  printf ("F6 - instr cntr");
   fflush (stdout);
   mt_setdefaultcolor ();
 }
@@ -366,10 +374,13 @@ do_load (void)
 {
   char filename[256];
 
+  int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+  fcntl(STDIN_FILENO, F_SETFL, flags & ~O_NONBLOCK);
+
   mt_gotoXY (MIN_ROWS, 1);
   mt_setfgcolor (WHITE);
   mt_setbgcolor (BLACK);
-  printf ("%-*s", MIN_COLS, "");  /* очистить строку */
+  printf ("%-*s", MIN_COLS, "");  
   mt_gotoXY (MIN_ROWS, 1);
   printf ("Введите имя файла для загрузки: ");
   fflush (stdout);
@@ -386,7 +397,8 @@ do_load (void)
         sc_memoryLoad (filename);
     }
 
-  rk_mytermregime (1, 0, 1, 0, 0);
+  rk_mytermregime (1, 0, 0, 0, 0);
+  fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
   mt_setcursorvisible (0);
   redraw_all ();
 }
@@ -396,10 +408,13 @@ do_save (void)
 {
   char filename[256];
 
+  int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+  fcntl(STDIN_FILENO, F_SETFL, flags & ~O_NONBLOCK);
+
   mt_gotoXY (MIN_ROWS, 1);
   mt_setfgcolor (WHITE);
   mt_setbgcolor (BLACK);
-  printf ("%-*s", MIN_COLS, "");  /* очистить строку */
+  printf ("%-*s", MIN_COLS, "");  
   mt_gotoXY (MIN_ROWS, 1);
   printf ("Введите имя файла для сохранения: ");
   fflush (stdout);
@@ -416,7 +431,8 @@ do_save (void)
         sc_memorySave (filename);
     }
 
-  rk_mytermregime (1, 0, 1, 0, 0);
+  rk_mytermregime (1, 0, 0, 0, 0);
+  fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
   mt_setcursorvisible (0);
   redraw_all ();
 }
@@ -431,6 +447,46 @@ do_reset (void)
   resetTerm ();
   current_cell = 0;
   redraw_all ();
+}
+
+static void
+do_run (void)
+{
+  running_mode = 1;
+
+  sc_regSet(SC_FLAG_IGNORE_PULSE, 0);
+}
+
+static void
+do_step (void)
+{
+  sc_regSet(SC_FLAG_IGNORE_PULSE, 0);
+
+  CU();
+
+  printAccumulator();
+  printCounters();
+  printFlags();
+  printCommand();
+
+  draw_all_cells();
+
+  int current_ic;
+  sc_icounterGet(&current_ic);
+  if (current_ic < SC_MEMORY_SIZE) {
+    current_cell = current_ic;
+    update_current_cell_display();
+  }
+
+  fflush(stdout);
+}
+
+static void
+stop_run (void)
+{
+  running_mode = 0;
+
+  redraw_all();
 }
 
 int
@@ -470,12 +526,24 @@ main (int argc, char *argv[])
     }
 
   rk_mytermsave ();
-  rk_mytermregime (1, 0, 1, 0, 0);
+  rk_mytermregime (1, 0, 0, 0, 0);
+
+  int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+  fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
 
   sc_memoryInit ();
   sc_accumulatorInit ();
   sc_icounterInit ();
   sc_regInit ();
+
+  struct itimerval timer;
+  timer.it_value.tv_sec = 0;
+  timer.it_value.tv_usec = 0;
+  timer.it_interval.tv_sec = 0;
+  timer.it_interval.tv_usec = 0;
+  setitimer(ITIMER_REAL, &timer, NULL);
+
+  signal(SIGALRM, SIG_IGN);
 
   mt_clrscr ();
   mt_setcursorvisible (0);
@@ -483,53 +551,100 @@ main (int argc, char *argv[])
 
   redraw_all ();
 
-  enum keys key;
   int running = 1;
 
   while (running)
     {
-      if (rk_readkey (&key) != 0)
-        continue;
+      enum keys key;
 
-      switch (key)
+      if (running_mode)
         {
-        case KEY_UP:
-        case KEY_DOWN:
-        case KEY_LEFT:
-        case KEY_RIGHT:
-          handle_arrow (key);
-          break;
+          do_step();
 
-        case KEY_ENTER:
-          edit_cell_inplace (current_cell);
-          break;
+          int ignore_flag;
+          if (sc_regGet(SC_FLAG_IGNORE_PULSE, &ignore_flag) == 0 && ignore_flag)
+            {
+              stop_run();
+              continue;
+            }
 
-        case KEY_ESC:
-          running = 0;
-          break;
+          for (int i = 0; i < 10; i++)
+            {
+              usleep(50000); // 50 мс
 
-        case KEY_F5:
-          edit_accumulator_inplace ();
-          break;
+              if (rk_readkey(&key) == 0)
+                {
+                  if (key == KEY_I)
+                    {
+                      stop_run();
+                      break;
+                    }
+                  else if (key == KEY_ESC)
+                    {
+                      stop_run();
+                      running = 0;
+                      break;
+                    }
+                }
+            }
+        }
+      else
+        {
+          if (rk_readkey (&key) == 0)
+            {
+              switch (key)
+                {
+                case KEY_UP:
+                case KEY_DOWN:
+                case KEY_LEFT:
+                case KEY_RIGHT:
+                  handle_arrow (key);
+                  break;
 
-        case KEY_F6:
-          edit_icounter_inplace ();
-          break;
+                case KEY_ENTER:
+                  edit_cell_inplace (current_cell);
+                  break;
 
-        case KEY_L:
-          do_load ();
-          break;
+                case KEY_ESC:
+                  running = 0;
+                  break;
 
-        case KEY_S:
-          do_save ();
-          break;
+                case KEY_F5:
+                  edit_accumulator_inplace ();
+                  break;
 
-        case KEY_I:
-          do_reset ();
-          break;
+                case KEY_F6:
+                  edit_icounter_inplace ();
+                  break;
 
-        default:
-          break;
+                case KEY_L:
+                  do_load ();
+                  break;
+
+                case KEY_S:
+                  do_save ();
+                  break;
+
+                case KEY_I:
+                  do_reset ();
+                  break;
+
+                case KEY_R:
+                  do_run ();
+                  break;
+
+                case KEY_T:
+                  do_step ();
+                  break;
+
+                default:
+                  break;
+                }
+            }
+          else
+            {
+              usleep(10000); 
+            }
         }
     }
 

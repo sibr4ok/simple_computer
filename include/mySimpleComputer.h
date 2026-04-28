@@ -43,28 +43,6 @@
 #define SC_CMD_AND 0x34
 #define SC_CMD_OR 0x35
 #define SC_CMD_XOR 0x36
-#define SC_CMD_JNS 0x37
-#define SC_CMD_JC 0x38
-#define SC_CMD_JNC 0x39
-#define SC_CMD_JP 0x3A
-#define SC_CMD_JNP 0x3B
-#define SC_CMD_CHL 0x3C
-#define SC_CMD_SHR 0x3D
-#define SC_CMD_RCL 0x3E
-#define SC_CMD_RCR 0x3F
-#define SC_CMD_NEG 0x40
-#define SC_CMD_ADDC 0x41
-#define SC_CMD_SUBC 0x42
-#define SC_CMD_LOGLC 0x43
-#define SC_CMD_LOGRC 0x44
-#define SC_CMD_RCCL 0x45
-#define SC_CMD_RCCR 0x46
-#define SC_CMD_MOVA 0x47
-#define SC_CMD_MOVR 0x48
-#define SC_CMD_MOVCA 0x49
-#define SC_CMD_MOVCR 0x4A
-#define SC_CMD_ADDCM 0x4B
-#define SC_CMD_SUBCM 0x4C
 
 #define SC_VAL(sign, high, low) (((sign) << 14) | ((high) << 7) | (low))
 #define SC_IC(low) ((low) & 0x7F)
@@ -129,5 +107,10 @@ void printCounters (void);
 void printCommand (void);
 void printTerm (int address, int input);
 void resetTerm (void);
+int getInoutCount (void);
+
+void CU (void);
+int ALU (int command, int operand);
+void IRC (int signum);
 
 #endif
